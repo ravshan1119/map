@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:map/providers/tab_box_provider.dart';
 import 'package:map/ui/map/map_screen.dart';
+import 'package:map/ui/order_traking/order_traking_screen.dart';
 import 'package:map/ui/user_locations/user_locations.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,7 @@ class _TabBoxState extends State<TabBox> {
   void initState() {
     screens.add(const MapScreen());
     screens.add(const UserLocationsScreen());
+    screens.add(const OrderTrakingScreen());
     super.initState();
   }
 
@@ -39,6 +41,8 @@ class _TabBoxState extends State<TabBox> {
           BottomNavigationBarItem(icon: Icon(Icons.map), label: "Map"),
           BottomNavigationBarItem(
               icon: Icon(Icons.location_pin), label: "User Addresses"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.spatial_tracking), label: "Order Traking"),
         ],
       ),
     );

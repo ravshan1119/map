@@ -9,9 +9,9 @@ class LocationProvider with ChangeNotifier {
 
   LatLng? latLong;
 
+
   Future<void> _getLocation() async {
     Location location = Location();
-
     bool serviceEnabled;
     PermissionStatus permissionGranted;
     LocationData locationData;
@@ -32,18 +32,32 @@ class LocationProvider with ChangeNotifier {
       }
     }
 
-    locationData = await location.getLocation();
 
-    latLong = LatLng(
-      locationData.latitude!,
-      locationData.longitude!,
-    );
+    try{
+      locationData = await location.getLocation();
+      latLong = LatLng(
+        locationData.latitude!,
+        locationData.longitude!,
+      );
 
-    notifyListeners();
+      debugPrint("SUCCESS ERROR:${latLong!.longitude}");
+      notifyListeners();
+    }catch(er){
+      debugPrint("LOCATION ERROR:$er");
+    }
+
+    location.enableBackgroundMode(enable: true);
+
+    location.onLocationChanged.listen((LocationData newLocation) {
+      debugPrint("LONGITUDE:${newLocation.longitude}");
+    });
+
   }
 
   updateLatLong(LatLng newLatLng) {
     latLong = newLatLng;
     notifyListeners();
   }
+
+
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -9,7 +10,10 @@ import 'package:map/providers/user_locations_provider.dart';
 import 'package:map/ui/map/widgets/address_kind_selector.dart';
 import 'package:map/ui/map/widgets/address_lang_selector.dart';
 import 'package:map/ui/map/widgets/save_button.dart';
+import 'package:map/utils/constants/constants.dart';
 import 'package:provider/provider.dart';
+
+import '../../service/location_service.dart';
 
 
 class MapScreen extends StatefulWidget {
@@ -24,13 +28,15 @@ class _MapScreenState extends State<MapScreen> {
   late CameraPosition currentCameraPosition;
   bool onCameraMoveStarted = false;
 
+
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
   @override
   void initState() {
-    LocationProvider locationProvider =
-        Provider.of<LocationProvider>(context, listen: false);
+
+    LocationProvider locationProvider = Provider.of<LocationProvider>(context, listen: false);
+    addNewMarker(locationProvider.latLong!);
 
     initialCameraPosition = CameraPosition(
       target: locationProvider.latLong!,
@@ -59,6 +65,10 @@ class _MapScreenState extends State<MapScreen> {
       body: Stack(
         children: [
           GoogleMap(
+            onLongPress: (latLng){
+              addNewMarker(latLng);
+            },
+            markers: markers,
             onCameraMove: (CameraPosition cameraPosition) {
               currentCameraPosition = cameraPosition;
             },
@@ -170,4 +180,22 @@ class _MapScreenState extends State<MapScreen> {
       CameraUpdate.newCameraPosition(cameraPosition),
     );
   }
+
+
+
+  addNewMarker(LatLng latLng) async {
+    Uint8List uint8list = await getBytesFromAsset("assets/person.png", 150);
+    markers.add(Marker(
+        markerId: MarkerId(
+          DateTime.now().toString(),
+        ),
+        position: latLng,
+        icon: BitmapDescriptor.fromBytes(uint8list),
+        //BitmapDescriptor.defaultMarker,
+        infoWindow: const InfoWindow(
+            title: "Samarqand", snippet: "Falonchi Ko'chasi 45-uy ")));
+    setState(() {});
+  }
+
+
 }
