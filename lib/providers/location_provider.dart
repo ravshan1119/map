@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:map/utils/constants/constants.dart';
 
 class LocationProvider with ChangeNotifier {
   LocationProvider() {
@@ -8,6 +11,8 @@ class LocationProvider with ChangeNotifier {
   }
 
   LatLng? latLong;
+
+  Set<Marker> markers = {};
 
 
   Future<void> _getLocation() async {
@@ -48,9 +53,21 @@ class LocationProvider with ChangeNotifier {
 
     location.enableBackgroundMode(enable: true);
 
-    location.onLocationChanged.listen((LocationData newLocation) {
+    location.onLocationChanged.listen((LocationData newLocation) async{
+      Uint8List uint8list = await getBytesFromAsset("assets/person.png", 150);
+      markers.add(Marker(
+          markerId: MarkerId(
+            DateTime.now().toString(),
+          ),
+          position: LatLng(newLocation.latitude!, newLocation.longitude!),
+          icon: BitmapDescriptor.fromBytes(uint8list),
+          //BitmapDescriptor.defaultMarker,
+          infoWindow: const InfoWindow(
+              title: "Samarqand", snippet: "Falonchi Ko'chasi 45-uy ")));
       debugPrint("LONGITUDE:${newLocation.longitude}");
     });
+
+    notifyListeners();
 
   }
 

@@ -68,7 +68,7 @@ class _MapScreenState extends State<MapScreen> {
             onLongPress: (latLng){
               addNewMarker(latLng);
             },
-            markers: markers,
+            markers: context.read<LocationProvider>().markers,
             onCameraMove: (CameraPosition cameraPosition) {
               currentCameraPosition = cameraPosition;
             },
@@ -181,9 +181,7 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-
-
-  addNewMarker(LatLng latLng) async {
+  void addNewMarker(LatLng latLng)async {
     Uint8List uint8list = await getBytesFromAsset("assets/person.png", 150);
     markers.add(Marker(
         markerId: MarkerId(
@@ -194,8 +192,13 @@ class _MapScreenState extends State<MapScreen> {
         //BitmapDescriptor.defaultMarker,
         infoWindow: const InfoWindow(
             title: "Samarqand", snippet: "Falonchi Ko'chasi 45-uy ")));
-    setState(() {});
+    debugPrint("LONGITUDE:${latLng.longitude}");
   }
+
+
+
+
+
 
 
 }
